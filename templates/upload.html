@@ -1,0 +1,69 @@
+<html>
+	<head>
+		<style>
+		.center 
+		{
+			margin: 0;
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			-ms-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+		}
+		.row 
+		{
+			display: flex;
+		}
+			/* Create two equal columns that sits next to each other */
+		.column 
+		{
+			flex: 50%;
+			padding: 10px;
+		}
+		</style>
+		<script type="text/javascript">
+		function checkform()
+		{
+			var f = document.forms["theform"].elements;
+			var cansubmit = true;
+
+			for (var i = 0; i < f.length; i++) 
+				if (f[i].value.length == 0) cansubmit = false;
+
+			document.getElementById('range').disabled = !cansubmit;
+		}
+	</script>
+		<title>GUI Based Transcript Generator</title>
+	</head>
+	<body>
+	<div class="center" style="text-align:center;">
+        <img src={{url_for('static',filename = '/instiLogo.jpeg')}} alt="Institue Logo"><br><br><br>
+		<form name ="theform" action = "http://localhost:5000/" method = "POST" enctype = "multipart/form-data">
+		<div class="row">
+			<div class="column">
+			<big><b>Upload Files</b></big>(Grades.CSV, Name-Roll.CSV & Subject_Master.CSV)<p>
+			<input type = "file" name = "files[]" multiple="true"/>
+			</div>
+			<div class="column">
+			<big><b>Upload Signature & Seal</b></big> 
+			<input type = "file" name = "sign[]" multiple="true"/>
+			</div>
+		</div>
+		<big><b>Range</b></big>(Roll Number)&emsp;<input type = "text" name = "First "id = "First" onkeyup="checkform()"/> - <input type = "text" id="Last" name="Last" onkeyup="checkform()"/><br><p>
+		<button type = "submit" id = "range" disabled = "disabled" name = "range">Upload</button><br><br>
+		<p><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button>
+		<p>
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+			</ul>
+		{% endif %}
+		{% endwith %}
+		</p>
+		</form>
+	</div>  
+	</body>
+</html>
