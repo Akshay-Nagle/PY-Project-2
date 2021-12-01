@@ -48,12 +48,12 @@ def file():
           return redirect(request.url)
 
       files = request.files.getlist('files[]')
-      if 'sign' in request.files:
+      if 'sign' in request.files and 'application/octet-stream' not in request.files:
          print(request.files['sign'])
          cPath =(os.path.join(app.config['UPLOAD_FOLDER'], "sign.png"))
          request.files['sign'].save(cPath)
          print(f"saved to:{cPath}")
-      if 'seal' in request.files:
+      if 'seal' in request.files and 'application/octet-stream' not in request.files:
          print(request.files['seal'])
          cPath =(os.path.join(app.config['UPLOAD_FOLDER'], "seal.png"))
          request.files['seal'].save(cPath)
@@ -70,8 +70,10 @@ def file():
 
 
       if "range" in rfm:
+         print("yyyyyyyyyy")
          if "First" in rfm:
             fst = rfm['First']
+            print(fst)
             coreLogic.prepMs(rfm['First'])
             flash('Transcript generated between given range')
          else:

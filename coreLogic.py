@@ -203,6 +203,7 @@ def prepPdfForRolls(rng: []):
 
 def prepMs(rnz, all=False):
     temp = rnz.replace(" ", "").split("-")
+    print(f"fffff{temp}")
 
     validRange = []
     absValidRange = []
@@ -224,6 +225,7 @@ def prepMs(rnz, all=False):
                 tempo = f"0{num}"
             validRange.append(f"{temp[0][:6]}{tempo}")
     
+    print(validRange)
     if os.path.exists(os.path.join(os.getcwd(), "results")):
         shutil.rmtree(os.path.join(os.getcwd(), "results"))
     os.mkdir(os.path.join(os.getcwd(), "results"))
@@ -251,9 +253,11 @@ def prepMs(rnz, all=False):
         )
         if all and (rnz.strip(" ") == ""):
             absValidRange.append(index)
-    # for (sth in validRange):
-    #     if sth in dfl:
-    #         absValidRange.append(sth)
+
+    if not all:
+        for sth in validRange:
+            if sth in dfl:
+                absValidRange.append(sth)
     # print("**************88")
     # print(validRange)
     # print("___________________88")
