@@ -1,4 +1,4 @@
-import customUtils
+import coreLogic
 import os      # For File Manipulations like get paths, rename
 from flask import Flask, flash, request, redirect, render_template
 from werkzeug.utils import secure_filename
@@ -26,7 +26,7 @@ if os.path.exists(UPLOAD_FOLDER):
 os.mkdir(UPLOAD_FOLDER)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = set(['csv', 'xlsx', 'png', 'jpeg', 'jpg'])
+ALLOWED_EXTENSIONS = set(['csv', 'png', 'jpeg', 'jpg'])
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -40,6 +40,7 @@ def file():
       if 'files[]' not in request.files:
           flash('No file part')
           return redirect(request.url)
+
       files = request.files.getlist('files[]')
 
       for file in files:
@@ -49,12 +50,11 @@ def file():
       flash('File(s) successfully uploaded')
       First = request.form["First"]
       Last = request.form["Last"] 
+
       if "range" in request.form:
-         #customUtils.mainFn(correctPoints, incorrectPoints)
          flash('Transcript generated between given range')
 
       if "transcript" in request.form:
-         #customUtils.callConcise(correctPoints, incorrectPoints)
          flash('All Transcript generated')
 
    return redirect('/')
