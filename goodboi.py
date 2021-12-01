@@ -37,8 +37,9 @@ def upload_form():
 @app.route('/', methods=['GET','POST'])
 def file():
    if request.method == 'POST':
+      rfm = request.form
       print("============")
-      print(request.form)
+      print(rfm)
       print("============")
       if 'files[]' not in request.files:
           flash('No file part')
@@ -50,13 +51,18 @@ def file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
       flash('File(s) successfully uploaded')
-      fst = request.form['First']
 
-      if "range" in request.form:
-         flash('Transcript generated between given range')
 
-      if "transcript" in request.form:
-         coreLogic.prepMs(fst)
+      if "range" in rfm:
+         if "First" in rfm:
+            fst = rfm['First']
+            coreLogic.prepMs(rfm['First'])
+            flash('Transcript generated between given range')
+         else:
+            flash("Enter valid range for RollNos!")
+
+      if "transcript" in rfm:
+         coreLogic.prepMs("", all=True)
          flash('All Transcript generated')
 
    return redirect('/')

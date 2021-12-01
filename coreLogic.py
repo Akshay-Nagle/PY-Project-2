@@ -48,10 +48,6 @@ def prepLists():
         if ind > 0:
             studNameMap[line[0]] = line[1]
 
-
-# print(masterList)
-
-
 def fixWildcardEntry(grade) -> str:
     return grade.replace("*", "") if grade[len(grade) - 1] == "*" else grade
 
@@ -140,7 +136,6 @@ def prepPdfForRolls(rng: []):
 
             for sem in range(sems):
                 indx = 0
-                print(f"sem: {sem} | ord: {ordinate.__round__(2)} | x: {abscissa.__round__(2)}")
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
                 for info in dfl[roll][sem + 1]:
@@ -167,7 +162,6 @@ def prepPdfForRolls(rng: []):
                             if sem not in stdims:
                                 stdims[sem] = []
                                 stdims[sem] = [pdf.get_x(), pdf.get_y()]
-                            # print(f"wwdh: {info[ir]} | {indx}")
                             pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
                             ix, iy = pdf.get_x(), pdf.get_y()
                         rind += 1
@@ -207,26 +201,28 @@ def prepPdfForRolls(rng: []):
             continue
 
 
-def prepMs(rnz):
+def prepMs(rnz, all=False):
     temp = rnz.replace(" ", "").split("-")
+
     validRange = []
     absValidRange = []
     lulz = False
-    print(temp)
-    for f in range(7):
-        if temp[1][f] != temp[1][f]:
-            lulz = True
-            return False
+    # print(temp)
+    if not all:
+        for f in range(7):
+            if temp[1][f] != temp[1][f]:
+                lulz = True
+                return False
 
-    if not lulz:
-        start = int(temp[0][-2:])
-        end = int(temp[1][-2:]) + 1
-    
-    for num in range(start, end):
-        tempo = f"{num}"
-        if len(str(num)) == 1:
-            tempo = f"0{num}"
-        validRange.append(f"{temp[0][:6]}{tempo}")
+        if not lulz:
+            start = int(temp[0][-2:])
+            end = int(temp[1][-2:]) + 1
+        
+        for num in range(start, end):
+            tempo = f"{num}"
+            if len(str(num)) == 1:
+                tempo = f"0{num}"
+            validRange.append(f"{temp[0][:6]}{tempo}")
     
     if os.path.exists(os.path.join(os.getcwd(), "results")):
         shutil.rmtree(os.path.join(os.getcwd(), "results"))
@@ -253,17 +249,16 @@ def prepMs(rnz):
         dfl[index][line[0]].append(
             [line[1], dct[line[1]][0], dct[line[1]][1], line[2], line[3]]
         )
-    for sth in validRange:
-        if sth in dfl:
-            absValidRange.append(sth)
+        if all and (rnz.strip(" ") == ""):
+            absValidRange.append(index)
     # for (sth in validRange):
     #     if sth in dfl:
     #         absValidRange.append(sth)
-    print("**************88")
-    print(validRange)
-    print("___________________88")
-    print(absValidRange)
-    print("|||||||||||||||||||||")
+    # print("**************88")
+    # print(validRange)
+    # print("___________________88")
+    # print(absValidRange)
+    # print("|||||||||||||||||||||")
     # return absValidRange
 
     """All the fpdf stuff goes here:"""
