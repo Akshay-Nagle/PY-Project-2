@@ -21,18 +21,21 @@
 			padding: 10px;
 		}
 		</style>
-		<!-- <script type="text/javascript">
-		function checkform()
-		{
-			var f = document.forms["theform"].elements;
-			var cansubmit = true;
-
-			for (var i = 0; i < f.length; i++) 
-				if (f[i].value.length == 0) cansubmit = false;
-
-			document.getElementById('submitbutton').disabled = !cansubmit;
-		}
-	</script> -->
+		<script type="text/javascript">
+    function EnableDisable(id) {
+        //Reference the Button.
+        var btnSubmit = document.getElementById("btnSubmit");
+ 
+        //Verify the TextBox value.
+        if (id.value.trim() != "") {
+            //Enable the TextBox when TextBox has value.
+            btnSubmit.disabled = false;
+        } else {
+            //Disable the TextBox when TextBox is empty.
+            btnSubmit.disabled = true;
+        }
+    };
+</script>
 		<title>GUI Based Transcript Generator</title>
 	</head>
 	<body>
@@ -46,14 +49,14 @@
 			</div>
 			<div class="column" style="text-align:center;">
 			<big><b>Upload Signature</b></big> 
-			<input type = "file" name = "sign""/><br><br>
+			<input type = "file" name = "sign"/><br><br>
 			<big><b>Upload Seal</b></big> <br>
-			<input type = "file" name = "seal""/>
+			<input type = "file" name = "seal"/>
 			</div>
 		</div>
 		<br>
-		<big><b>Range</b></big>(Roll Number)&emsp;<input type = "text" name = "First"id = "First" onkeyup="checkform()"/> - <input type = "text" id="Last" name="Last" onkeyup="checkform()"/><br><p>
-		<input id="submitbutton" type="submit" value="Upload" />
+		<big><b>Range</b></big>(Eg: "1901CB01-1901CB80")&emsp;<input type = "text" name = "First" onkeyup="EnableDisable(this)" id="First"/>
+		<input id="btnSubmit" type="button" value="Upload" disabled="disabled" />
 		<p><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button>
 		<p>
 		{% with messages = get_flashed_messages() %}
