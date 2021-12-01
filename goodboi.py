@@ -51,13 +51,12 @@ def file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
       flash('File(s) successfully uploaded')
       fst = request.form['First']
-      lst = request.form['Last'] 
 
       if "range" in request.form:
          flash('Transcript generated between given range')
 
       if "transcript" in request.form:
-         coreLogic.prepMs(f"{fst}-{lst}")
+         coreLogic.prepMs(fst)
          flash('All Transcript generated')
 
    return redirect('/')
