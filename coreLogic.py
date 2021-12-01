@@ -5,10 +5,10 @@ import pandas as pd
 import csv
 import os
 
-file_to_be_parsed = os.path.join(os.getcwd(), "assets/tempGrades.csv")
+file_to_be_parsed = os.path.join(os.getcwd(), "uploads/grades.csv")
 # header_row = ["Sl No.", "Subject No", "Subject Name", "L-T-P", "Credit", "Subject Type", "Grade"]
-subNameMapping = os.path.join(os.getcwd(), "assets/subjectsMaster.csv")
-studNameMapping = os.path.join(os.getcwd(), "assets/names-roll.csv")
+subNameMapping = os.path.join(os.getcwd(), "uploads/subjects_master.csv")
+studNameMapping = os.path.join(os.getcwd(), "uploads/names-roll.csv")
 
 masterList = []
 subNameMap = []
@@ -49,7 +49,6 @@ def prepLists():
             studNameMap[line[0]] = line[1]
 
 
-prepLists()
 # print(masterList)
 
 
@@ -105,9 +104,9 @@ def prepOverallResult(rollNum: str):
 
     return maxSem - 1, semwiseCreds, fullCreds, spi, cpi
 
-
 def prepPdfForRolls(rng: []):
     dims = {}
+    stdims = {}
     for roll in rng:
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
@@ -115,32 +114,22 @@ def prepPdfForRolls(rng: []):
             pdf.add_page()
             pdf.set_font("Times", size=10)
             line_height = pdf.font_size * 1.5
-            pdf.rect(x=10, y=10, w=pdf.w - 20, h=pdf.h - 20, style="")
+            pdf.rect(x=10, y=10, w=pdf.w - 20, h=pdf.h-20, style="")
             pdf.rect(x=85, y=43, w=(pdf.w / 2) + 20, h=15, style="")
             fmtr = 0
-            pdf.image(
-                os.path.join(os.getcwd(), "tsBanner.png"), x=10, y=10, w=pdf.w - 20
-            )
+            pdf.image(os.path.join(os.getcwd(), "assets/tsBanner.png"), x=10, y=10, w=pdf.w - 20)
             prg = ""
             temp = roll
-            if str(temp)[2] == "1":
+            if str(temp)[2] == '1':
                 prg = "Master of Technology"
-            if str(temp)[2] == "2":
+            if str(temp)[2] == '2':
                 prg = "PhD"
-            if str(temp)[2] == "0":
+            if str(temp)[2] == '0':
                 prg = "Bachelor of Technology"
             pdf.set_font(size=12, style="B")
-            pdf.text(
-                x=87,
-                y=48,
-                txt=f"Roll No:  {roll}                                     Name: {studNameMap[roll]}       Year of Admission:  20{roll[0] + roll[1]}",
-            )
+            pdf.text(x=87, y=48, txt=f"Roll No:  {roll}                                     Name: {studNameMap[roll]}       Year of Admission:  20{roll[0] + roll[1]}")
 
-            pdf.text(
-                x=87,
-                y=55,
-                txt=f"Programme: {prg}       Course: {branchMap[str(temp[4] + temp[5])]}",
-            )
+            pdf.text(x=87, y=55, txt=f"Programme: {prg}       Course: {branchMap[str(temp[4] + temp[5])]}")
             pdf.set_font(size=10, style="")
             abscissa = 7
             ordinate = 64
@@ -151,37 +140,35 @@ def prepPdfForRolls(rng: []):
 
             for sem in range(sems):
                 indx = 0
-                print(
-                    f"sem: {sem} | ord: {ordinate.__round__(2)} | x: {abscissa.__round__(2)}"
-                )
+                print(f"sem: {sem} | ord: {ordinate.__round__(2)} | x: {abscissa.__round__(2)}")
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
                 for info in dfl[roll][sem + 1]:
                     if abscissa != 0:
-                        pdf.set_x(abscissa + 13)
+                        pdf.set_x(abscissa + 10)
                         rind = 0
                     wdh = 0
                     ls = len(info) + 1
                     for ir in range(ls):
-                        if rind == 0:
+                        if rind == 0: 
                             wdh = 14
                         elif rind == 1:
                             wdh = 77
                         elif rind == 2:
                             wdh = 11
                         elif rind == 4 or rind == 3:
-                            wdh = 8
+                            wdh = 11
 
+                        if indx == 0:
+                            pdf.set_font(style="B")
+                        else:
+                            pdf.set_font(style="")
                         if ir < ls - 1:
-                            pdf.multi_cell(
-                                wdh,
-                                line_height,
-                                str(info[ir]),
-                                border=1,
-                                ln=3,
-                                max_line_height=pdf.font_size,
-                                align="C",
-                            )
+                            if sem not in stdims:
+                                stdims[sem] = []
+                                stdims[sem] = [pdf.get_x(), pdf.get_y()]
+                            # print(f"wwdh: {info[ir]} | {indx}")
+                            pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
                             ix, iy = pdf.get_x(), pdf.get_y()
                         rind += 1
                     if indx == (len(dfl[roll][sem + 1]) - 1):
@@ -196,12 +183,8 @@ def prepPdfForRolls(rng: []):
                             recx = abscissa
                         cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
                         pdf.set_font(style="B", size=10)
-                        pdf.text(
-                            x=cx - 6,
-                            y=cy + 2,
-                            txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}",
-                        )
-                        pdf.rect(x=cx - 8, y=cy - 2, w=95, h=7, style="")
+                        pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
+                        pdf.rect(x=cx - 14, y=cy - 2, w=95, h=7, style="")
                         pdf.set_font(style="", size=10)
                         # print(f"{ordinate.__round__(2)} | sem: {sem}")
                         ah = recy if recy > 0 else ordinate
@@ -210,12 +193,7 @@ def prepPdfForRolls(rng: []):
                     indx += 1
                     pdf.ln(line_height)
             # print(dims)
-            pdf.line(
-                x1=10,
-                y1=dims[len(dims) - 1][1] + 30,
-                x2=pdf.w - 10,
-                y2=dims[len(dims) - 1][1] + 28,
-            )
+            pdf.line(x1=10, y1=dims[len(dims)-1][1] + 30, x2= pdf.w - 10, y2=dims[len(dims) - 1][1] + 28)
 
             # print(dims["last"])
             xco = dims[len(dims) - 1][0] + 80
@@ -224,21 +202,38 @@ def prepPdfForRolls(rng: []):
             pdf.set_font(size=12, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
             # pdf.text(20, yco, txt=f"Date Generated: {datetime().today()}")
-            pdf.text(
-                20,
-                yco,
-                txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}",
-            )
-            pdf.output(f"{roll}Result.pdf")
+            pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
+            pdf.output(f"results/{roll}Result.pdf")
         else:
             continue
 
 
-def prepMs(rollRange=[]):
-    if os.path.exists(os.path.join(os.getcwd(), "imgz")):
-        shutil.rmtree(os.path.join(os.getcwd(), "imgz"))
-    os.mkdir(os.path.join(os.getcwd(), "imgz"))
+def prepMs(rnz):
+    temp = rnz.split("-")
+    validRange = []
+    absValidRange = []
+    lulz = False
+    print(temp)
+    for f in range(7):
+        if temp[1][f] != temp[1][f]:
+            lulz = True
+            return False
 
+    if not lulz:
+        start = int(temp[0][-2:])
+        end = int(temp[1][-2:]) + 1
+    
+    for num in range(start, end):
+        tempo = f"{num}"
+        if len(str(num)) == 1:
+            tempo = f"0{num}"
+        validRange.append(f"{temp[0][:6]}{tempo}")
+    
+    if os.path.exists(os.path.join(os.getcwd(), "results")):
+        shutil.rmtree(os.path.join(os.getcwd(), "results"))
+    os.mkdir(os.path.join(os.getcwd(), "results"))
+
+    prepLists()
     somethingAns = pd.read_csv(file_to_be_parsed)
     dFrame = pd.read_csv(file_to_be_parsed, usecols=[0, 1, 2, 3, 4, 5], index_col=0)
     dFrame.sort_values(by=["Roll", "Sem", "SubCode"], inplace=True)
@@ -255,27 +250,30 @@ def prepMs(rollRange=[]):
             dfl[index] = {}
         if line[0] not in dfl[index]:
             dfl[index][line[0]] = []
+            dfl[index][line[0]].append(["Sub", "Course Name", "L-T-P", "CRD", "GRD"])
         dfl[index][line[0]].append(
             [line[1], dct[line[1]][0], dct[line[1]][1], line[2], line[3]]
         )
-
-    df = None
-    for roll in dfl:
-        for sem in sorted(dfl[roll]):
-            df = pd.DataFrame(
-                dfl[roll][sem], columns=["Code", "Name", "LTP", "Creds", "Grades"]
-            )
-            # print(f"{type(dfl[roll])}||{dfl[roll]}")
-            # print(dfl[roll][sem])
-            # print("===================")
-            # print(df)
-            # break
-        # break
-    # return
+    for sth in validRange:
+        if sth in dfl:
+            absValidRange.append(sth)
+    # for (sth in validRange):
+    #     if sth in dfl:
+    #         absValidRange.append(sth)
+    print("**************88")
+    print(validRange)
+    print("___________________88")
+    print(absValidRange)
+    print("|||||||||||||||||||||")
+    # return absValidRange
 
     """All the fpdf stuff goes here:"""
     # prepOverallResult("0401CS01")
-    prepPdfForRolls(rollRange)
+    prepPdfForRolls(absValidRange)
 
+def main():
+    # print("hii")
+    pass
 
-prepMs(["0401CS01"])
+if __name__ == "__main__":
+    main()
