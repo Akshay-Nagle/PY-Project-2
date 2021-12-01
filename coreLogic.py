@@ -201,7 +201,6 @@ def prepPdfForRolls(rng: []):
             pdf.line(xco, yco, xco + 50, yco)
             pdf.set_font(size=12, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
-            # pdf.text(20, yco, txt=f"Date Generated: {datetime().today()}")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
             pdf.output(f"results/{roll}Result.pdf")
         else:
@@ -209,7 +208,7 @@ def prepPdfForRolls(rng: []):
 
 
 def prepMs(rnz):
-    temp = rnz.split("-")
+    temp = rnz.replace(" ", "").split("-")
     validRange = []
     absValidRange = []
     lulz = False
