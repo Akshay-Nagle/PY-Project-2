@@ -2,7 +2,6 @@ import coreLogic
 import os      # For File Manipulations like get paths, rename
 from flask import Flask, flash, request, redirect, render_template
 from werkzeug.utils import secure_filename
-from flask_mail import Mail, Message
 import shutil
 import csv
 import openpyxl
@@ -58,3 +57,6 @@ def file():
          flash('All Transcript generated')
 
    return redirect('/')
+
+if __name__ == "__main__":
+    app.run()

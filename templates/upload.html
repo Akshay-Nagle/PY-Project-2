@@ -30,7 +30,7 @@
 			for (var i = 0; i < f.length; i++) 
 				if (f[i].value.length == 0) cansubmit = false;
 
-			document.getElementById('range').disabled = !cansubmit;
+			document.getElementById('submitbutton').disabled = !cansubmit;
 		}
 	</script>
 		<title>GUI Based Transcript Generator</title>
@@ -52,8 +52,13 @@
 			</div>
 		</div>
 		<br>
+<<<<<<< Updated upstream
         <big><b>Range</b></big>("Eg: 0401CS01-0401CS70")&emsp;<input type = "text" name = "First "id = "First" onkeyup="checkform()"/><br><p>
 		<button type = "submit" id = "range" disabled = "disabled" name = "range">Upload</button><br><br>
+=======
+		<big><b>Range</b></big>(Roll Number)&emsp;<input type = "text" name = "First "id = "First" onkeyup="checkform()"/> - <input type = "text" id="Last" name="Last" onkeyup="checkform()"/><br><p>
+		<input id="submitbutton" type="submit" disabled="disabled" value="Upload" />
+>>>>>>> Stashed changes
 		<p><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button>
 		<p>
 		{% with messages = get_flashed_messages() %}
