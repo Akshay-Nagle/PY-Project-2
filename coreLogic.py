@@ -175,8 +175,8 @@ def prepPdfForRolls(rng: []):
                                 if sem not in stdims:
                                     stdims[sem] = []
                                     stdims[sem] = [pdf.get_x(), pdf.get_y()]
-                                    pdf.set_font(style="B", size=10)
-                                    pdf.text(x=stdims[sem][0], y=stdims[sem][1] - 2, txt=f"Semester {sem + 1}")
+                                    pdf.set_font(style="BU", size=10)
+                                    pdf.text(x=stdims[sem][0], y=stdims[sem][1] - 1, txt=f"Semester {sem + 1}")
                                     pdf.set_font(style="")
                                     pdf.set_xy(x=stdims[sem][0], y=stdims[sem][1])
                                 pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
@@ -202,8 +202,6 @@ def prepPdfForRolls(rng: []):
                             ordinate = pdf.get_y()
                         indx += 1
                         pdf.ln(line_height)
-                    print("============")
-                    print(stdims[sem])
                 else:
                     missed += 1
                     continue
