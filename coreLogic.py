@@ -115,10 +115,10 @@ def prepPdfForRolls(rng: []):
         missed = 0
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
-            print(f"Semssssss: {sems}")
+            # print(f"Semssssss: {sems}")
             pdf = FPDF(orientation="L", unit="mm", format="A3")
             pdf.add_page()
-            pdf.set_font("Times", size=10)
+            pdf.set_font("Times", size=8.5)
             line_height = pdf.font_size * 1.5
             pdf.rect(x=10, y=10, w=pdf.w - 20, h=pdf.h-20, style="")
             pdf.rect(x=85, y=43, w=(pdf.w / 2) + 20, h=15, style="")
@@ -132,28 +132,28 @@ def prepPdfForRolls(rng: []):
                 prg = "PhD"
             if str(temp)[2] == '0':
                 prg = "Bachelor of Technology"
-            pdf.set_font(size=12, style="B")
+            pdf.set_font(size=10, style="B")
             pdf.text(x=87, y=48, txt=f"Roll No:  {roll}                                     Name: {studNameMap[roll]}       Year of Admission:  20{roll[0] + roll[1]}")
 
             pdf.text(x=87, y=55, txt=f"Programme: {prg}       Course: {branchMap[str(temp[4] + temp[5])]}")
-            pdf.set_font(size=10, style="")
+            pdf.set_font(size=8.5, style="")
             abscissa = 7
             ordinate = 64
             recy = 0
             recx = 0
             tx = 7
             pdf.set_y(ordinate)
-            print("===================================")
-            print(dfl[roll])
-            print("===================================")
+            # print("===================================")
+            # print(dfl[roll])
+            # print("===================================")
 
             for sem in range(sems):
                 indx = 0
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
-                print("----------------")
-                print(sem)
-                print("----------------")
+                # print("----------------")
+                # print(sem)
+                # print("----------------")
                 if sem + 1 in dfl[roll].keys():
                     for info in dfl[roll][sem + 1]:
                         if abscissa != 0:
@@ -189,14 +189,14 @@ def prepPdfForRolls(rng: []):
                             abscissa = pdf.get_x()
                             tx = pdf.get_x()
                             if (sem + 1) % 3 == 0:
-                                recy = pdf.get_y() + 21.5
+                                recy = pdf.get_y() + 20
                                 abscissa = 7
                                 recx = abscissa
                             cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
-                            pdf.set_font(style="B", size=10)
+                            pdf.set_font(style="B", size=8.5)
                             pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
                             pdf.rect(x=cx - 14, y=cy - 2, w=95, h=7, style="")
-                            pdf.set_font(style="", size=10)
+                            pdf.set_font(style="", size=8.5)
                             # print(f"{ordinate.__round__(2)} | sem: {sem}")
                             ah = recy if recy > 0 else ordinate
                             pdf.set_y(ah)
@@ -208,8 +208,8 @@ def prepPdfForRolls(rng: []):
                     continue
             # print(dims)
             ldims = len(dims) - missed - 1
-            print(f"lennnn: {ldims} | {len(dims)}")
-            print(f"{dims}")
+            # print(f"lennnn: {ldims} | {len(dims)}")
+            # print(f"{dims}")
             if signAv:
                 pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[ldims][1] + 37, w=30)
             if sealAv:
@@ -219,7 +219,7 @@ def prepPdfForRolls(rng: []):
             xco = dims[ldims][0] + 80
             yco = dims[ldims][1] + 50
             pdf.line(xco, yco, xco + 50, yco)
-            pdf.set_font(size=12, style="B")
+            pdf.set_font(size=10, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
             pdf.output(f"results/{roll}.pdf")
@@ -229,7 +229,7 @@ def prepPdfForRolls(rng: []):
 
 def prepMs(rnz, all=False):
     temp = rnz.replace(" ", "").split("-")
-    print(f"fffff{temp}")
+    # print(f"fffff{temp}")
 
     validRange = []
     absValidRange = []
@@ -251,7 +251,7 @@ def prepMs(rnz, all=False):
                 tempo = f"0{num}"
             validRange.append(f"{temp[0][:6]}{tempo}")
     
-    print(validRange)
+    # print(validRange)
     if os.path.exists(os.path.join(os.getcwd(), "results")):
         shutil.rmtree(os.path.join(os.getcwd(), "results"))
     os.mkdir(os.path.join(os.getcwd(), "results"))
