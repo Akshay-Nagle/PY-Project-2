@@ -49,8 +49,6 @@ def file():
       print("============")
       print(rfm)
       print("-----------------")
-      # print(request.files['sign'])
-      # print("============")
       if 'files[]' not in request.files:
           flash('No file part')
           return redirect(request.url)
@@ -97,9 +95,11 @@ def file():
             if "First" in rfm:
                fst = rfm['First']
                print(fst)
-               resp = coreLogic.prepMs(rfm['First'])
+               resp, tlst = coreLogic.prepMs(rfm['First'])
                if resp:
                   flash('Transcripts generated in specified range')
+                  if len(tlst) > 0:
+                     flash(f"Roll Nos: {tlst} do not exist!")
                else:
                   flash("Enter valid range for RollNos!")
             else:
@@ -109,8 +109,11 @@ def file():
 
       if "transcript" in rfm:
          if rejForm not in str(files):
-            coreLogic.prepMs("", all=True)
-            flash('All Transcript generated')
+            resp, tlst = coreLogic.prepMs("", all=True)
+            if resp:
+               flash('All Transcript generated')
+               if len(tlst) > 0:
+                  flash(f"Roll Nos: {tlst} do not exist!")
          else:
             if not finfo:
                flash('Please upload all the required files')

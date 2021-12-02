@@ -232,16 +232,17 @@ def prepMs(rnz, all=False):
 
     validRange = []
     absValidRange = []
+    invzRolls = []
     lulz = False
 
     if not all:
         if len(temp) == 1:
-            return False
+            return False, []
 
         for f in range(7):
             if temp[1][f] != temp[1][f]:
                 lulz = True
-                return False
+                return False, []
 
         if not lulz:
             start = int(temp[0][-2:])
@@ -285,11 +286,13 @@ def prepMs(rnz, all=False):
         for sth in validRange:
             if sth in dfl:
                 absValidRange.append(sth)
+            else:
+                invzRolls.append(sth)
 
     prepPdfForRolls(absValidRange)
     # prepareTranscriptsArchive()
     dfl.clear()
-    return True
+    return True, invzRolls
 
 def prepareTranscriptsArchive():
     if len(os.listdir(os.path.join(os.getcwd(), "transcriptsIITP"))) > 0:
