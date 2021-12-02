@@ -221,7 +221,7 @@ def prepPdfForRolls(rng: []):
             pdf.set_font(size=14, style="B")
             pdf.text(xco - 42, yco, txt="Assitant Registrar")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
-            pdf.output(f"results/{roll}.pdf")
+            pdf.output(f"transcriptsIITP/{roll}.pdf")
         else:
             continue
     return
@@ -253,9 +253,9 @@ def prepMs(rnz, all=False):
                 tempo = f"0{num}"
             validRange.append(f"{temp[0][:6]}{tempo}")
     
-    if os.path.exists(os.path.join(os.getcwd(), "results")):
-        shutil.rmtree(os.path.join(os.getcwd(), "results"))
-    os.mkdir(os.path.join(os.getcwd(), "results"))
+    if os.path.exists(os.path.join(os.getcwd(), "transcriptsIITP")):
+        shutil.rmtree(os.path.join(os.getcwd(), "transcriptsIITP"))
+    os.mkdir(os.path.join(os.getcwd(), "transcriptsIITP"))
 
     prepLists()
     somethingAns = pd.read_csv(file_to_be_parsed)
@@ -292,8 +292,8 @@ def prepMs(rnz, all=False):
     return True
 
 def prepareTranscriptsArchive():
-    if len(os.listdir(os.path.join(os.getcwd(), "results"))) > 0:
-        shutil.make_archive("transcripts", "zip", os.path.join(os.getcwd(), "results"))
+    if len(os.listdir(os.path.join(os.getcwd(), "transcriptsIITP"))) > 0:
+        shutil.make_archive("transcripts", "zip", os.path.join(os.getcwd(), "transcriptsIITP"))
         return True
     return False
 
