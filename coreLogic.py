@@ -116,9 +116,10 @@ def prepPdfForRolls(rng: []):
         missed = 0
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
+            # print(f"Semssssss: {sems}")
             pdf = FPDF(orientation="L", unit="mm", format="A3")
             pdf.add_page()
-            pdf.set_font("Times", size=10)
+            pdf.set_font("Times", size=8.5)
             line_height = pdf.font_size * 1.5
             pdf.rect(x=10, y=10, w=pdf.w - 20, h=pdf.h-20, style="")
             pdf.rect(x=85, y=43, w=(pdf.w / 2) + 20, h=15, style="")
@@ -148,7 +149,6 @@ def prepPdfForRolls(rng: []):
                 indx = 0
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
-
                 if sem + 1 in dfl[roll].keys():
                     for info in dfl[roll][sem + 1]:
                         if abscissa != 0:
@@ -201,20 +201,17 @@ def prepPdfForRolls(rng: []):
                 else:
                     missed += 1
                     continue
-      
             ldims = len(dims) - missed - 1
-
             if signAv:
                 pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[ldims][1] + 37, w=30)
             if sealAv:
                 pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=pdf.w/2, y=dims[ldims][1] + 27, w=30)
             pdf.line(x1=10, y1=dims[ldims][1] + 30, x2= pdf.w - 10, y2=dims[ldims][1] + 28)
-            
 
             xco = dims[ldims][0] + 80
             yco = dims[ldims][1] + 50
             pdf.line(xco, yco, xco + 50, yco)
-            pdf.set_font(size=12, style="B")
+            pdf.set_font(size=10, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
             pdf.output(f"results/{roll}.pdf")
