@@ -59,9 +59,9 @@
 		<br>
 		<div style="text-align:center;">
 		<big><b>Range</b></big>(Eg: "0401CS01-0401CS10")&emsp;&emsp;<input type = "text" name = "First" onkeyup="EnableDisable(this)" id="First"/>
-		<a href="{{ url_for('.push_file') }}">Download</a>
 		<p style="text-align:center;"><button type="submit" id="btnSubmit" name = "range" disabled="disabled">Generate In-Range Transcript</button><br>
 		<p style="text-align:center;"><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button><br>
+		<p style="text-align:center;"><a href="{{ url_for('.push_file') }}">Download Transcripts Zip</a><br>
 		</div>
 		<p>
 		{% with messages = get_flashed_messages() %}

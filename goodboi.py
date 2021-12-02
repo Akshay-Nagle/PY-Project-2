@@ -11,7 +11,7 @@ from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
 import os
 
 path = os.getcwd()
-app=Flask(__name__, static_folder=path)
+app=Flask(__name__, static_folder=coreLogic.baseDir)
 app.secret_key = "secret key" # for encrypting the session
 
 #It will allow below 4MB contents only, you can change it
@@ -36,9 +36,13 @@ def upload_form():
 
 @app.route('/download', methods=['GET', 'POST'])
 def push_file():
-    coreLogic.prepareTranscriptsArchive()
-    file_path = os.path.join(os.getcwd(), "transcripts.zip")
-    return send_file(file_path, as_attachment=True)
+   resp = coreLogic.prepareTranscriptsArchive()
+   if resp:
+      file_path = os.path.join(os.getcwd(), "transcripts.zip")
+      return send_file(file_path, as_attachment=True)
+   else:
+      flash("Generate Transcripts First")
+      return redirect("/")
 
 @app.route('/', methods=['GET','POST'])
 def file():

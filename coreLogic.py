@@ -295,10 +295,13 @@ def prepMs(rnz, all=False):
     return True, invzRolls
 
 def prepareTranscriptsArchive():
-    if len(os.listdir(os.path.join(os.getcwd(), "transcriptsIITP"))) > 0:
-        shutil.make_archive("transcripts", "zip", os.path.join(os.getcwd(), "transcriptsIITP"))
-        return True
-    return False
+    if os.path.exists(os.path.join(os.getcwd(), "transcriptsIITP")):
+        if len(os.listdir(os.path.join(os.getcwd(), "transcriptsIITP"))) > 0:
+            shutil.make_archive("transcripts", "zip", os.path.join(os.getcwd(), "transcriptsIITP"))
+            return True
+        return False
+    else:
+        return False
 
 def main():
     #prepMs("1901CS01-1901CS04")
