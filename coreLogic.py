@@ -7,12 +7,10 @@ import os
 
 baseDir = os.path.join(os.getcwd(), "assets")
 file_to_be_parsed = os.path.join(os.getcwd(), "uploads/grades.csv")
-# header_row = ["Sl No.", "Subject No", "Subject Name", "L-T-P", "Credit", "Subject Type", "Grade"]
 subNameMapping = os.path.join(os.getcwd(), "uploads/subjects_master.csv")
 studNameMapping = os.path.join(os.getcwd(), "uploads/names-roll.csv")
 
 masterList = []
-subNameMap = []
 studNameMap = {}
 dfl = {}
 dct = {}
@@ -41,10 +39,6 @@ gradeMap = {
 
 
 def prepLists():
-    for ind, line in enumerate(csv.reader(open(file_to_be_parsed))):
-        masterList.append(line)
-    for ind, line in enumerate(csv.reader(open(subNameMapping))):
-        subNameMap.append(line)
     for ind, line in enumerate(csv.reader(open(studNameMapping))):
         if ind > 0:
             studNameMap[line[0]] = line[1]
@@ -55,6 +49,10 @@ def fixWildcardEntry(grade) -> str:
 
 def prepOverallResult(rollNum: str):
     spi, cpi = ["SPI"], ["CPI"]
+
+    masterList = []
+    for ind, line in enumerate(csv.reader(open(file_to_be_parsed))):
+        masterList.append(line)
 
     maxSem = 0
 
@@ -99,6 +97,12 @@ def prepOverallResult(rollNum: str):
         mCpi += spi[sem] * semwiseCreds[sem]
         cpi.append((mCpi / dynCreds).__round__(2))
 
+    # print("==================")
+    # # print(maxSem - 1)
+    # print(semwiseCreds)
+    # print(len(masterList), len(studNameMap))
+    # print("==================")
+    # # masterList.clear()
     return maxSem - 1, semwiseCreds, fullCreds, spi, cpi
 
 def checkForImg(imgName) -> bool:
