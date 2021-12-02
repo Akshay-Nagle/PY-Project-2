@@ -100,9 +100,17 @@ def prepOverallResult(rollNum: str):
 
     return maxSem - 1, semwiseCreds, fullCreds, spi, cpi
 
+def checkForImg(imgName) -> bool:
+    conts = os.listdir(os.path.join(os.getcwd(), "uploads"))
+    if imgName not in conts:
+        return False
+    return True
+
 def prepPdfForRolls(rng: []):
     dims = {}
     stdims = {}
+    sealAv = checkForImg("seal.jpeg")
+    signAv = checkForImg("sign.jpeg")
     for roll in rng:
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
@@ -187,6 +195,10 @@ def prepPdfForRolls(rng: []):
                     indx += 1
                     pdf.ln(line_height)
             # print(dims)
+            if signAv:
+                pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[len(dims) - 1][1] + 37, w=30)
+            if sealAv:
+                pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=pdf.w/2, y=dims[len(dims) - 1][1] + 27, w=30)
             pdf.line(x1=10, y1=dims[len(dims)-1][1] + 30, x2= pdf.w - 10, y2=dims[len(dims) - 1][1] + 28)
 
             # print(dims["last"])
