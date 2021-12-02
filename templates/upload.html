@@ -60,19 +60,19 @@
 		<div style="text-align:center;">
 		<big><b>Range</b></big>(Eg: "0401CS01-0401CS10")&emsp;&emsp;<input type = "text" name = "First" onkeyup="EnableDisable(this)" id="First"/>
 		<p style="text-align:center;"><button type="submit" id="btnSubmit" name = "range" disabled="disabled">Generate In-Range Transcript</button><br>
-		<p style="text-align:center;"><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button>
+		<p style="text-align:center;"><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button><br>
+		</div>
 		<p>
 		{% with messages = get_flashed_messages() %}
-		{% if messages %}
-			<ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-			</ul>
-		{% endif %}
+			{% if messages %}
+				<ul class=flashes>
+				{% for message in messages %}
+					<li>{{ message }}</li>
+				{% endfor %}
+				</ul>
+			{% endif %}
 		{% endwith %}
 		</p>
-		</div>
 		</form>
 	</div>  
 	</body>

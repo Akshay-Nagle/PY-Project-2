@@ -5,6 +5,7 @@ import pandas as pd
 import csv
 import os
 
+baseDir = os.path.join(os.getcwd(), "assets")
 file_to_be_parsed = os.path.join(os.getcwd(), "uploads/grades.csv")
 # header_row = ["Sl No.", "Subject No", "Subject Name", "L-T-P", "Credit", "Subject Type", "Grade"]
 subNameMapping = os.path.join(os.getcwd(), "uploads/subjects_master.csv")
@@ -100,10 +101,19 @@ def prepOverallResult(rollNum: str):
 
     return maxSem - 1, semwiseCreds, fullCreds, spi, cpi
 
+def checkForImg(imgName) -> bool:
+    conts = os.listdir(os.path.join(os.getcwd(), "uploads"))
+    if imgName not in conts:
+        return False
+    return True
+
 def prepPdfForRolls(rng: []):
-    dims = {}
-    stdims = {}
+    sealAv = checkForImg("seal.jpeg")
+    signAv = checkForImg("sign.jpeg")
     for roll in rng:
+        dims = {}
+        stdims = {}
+        missed = 0
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
             pdf = FPDF(orientation="L", unit="mm", format="A3")
@@ -123,75 +133,86 @@ def prepPdfForRolls(rng: []):
             if str(temp)[2] == '0':
                 prg = "Bachelor of Technology"
             pdf.set_font(size=12, style="B")
-            pdf.text(x=87, y=48, txt=f"Roll No:  {roll}                                     Name: {studNameMap[roll]}       Year of Admission:  20{roll[0] + roll[1]}")
-
+            pdf.text(x=87, y=48, txt=f"Roll No:  {roll}                                     Name: {studNameMap[roll]}                                            Year of Admission:  20{roll[0] + roll[1]}")
             pdf.text(x=87, y=55, txt=f"Programme: {prg}       Course: {branchMap[str(temp[4] + temp[5])]}")
+
             pdf.set_font(size=10, style="")
             abscissa = 7
             ordinate = 64
             recy = 0
             recx = 0
             tx = 7
-            pdf.set_y(ordinate)
+            pdf.set_y(ordinate+5)
 
             for sem in range(sems):
                 indx = 0
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
-                for info in dfl[roll][sem + 1]:
-                    if abscissa != 0:
-                        pdf.set_x(abscissa + 10)
-                        rind = 0
-                    wdh = 0
-                    ls = len(info) + 1
-                    for ir in range(ls):
-                        if rind == 0: 
-                            wdh = 14
-                        elif rind == 1:
-                            wdh = 77
-                        elif rind == 2:
-                            wdh = 11
-                        elif rind == 4 or rind == 3:
-                            wdh = 11
 
-                        if indx == 0:
-                            pdf.set_font(style="B")
-                        else:
-                            pdf.set_font(style="")
-                        if ir < ls - 1:
-                            if sem not in stdims:
-                                stdims[sem] = []
-                                stdims[sem] = [pdf.get_x(), pdf.get_y()]
-                            pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
-                            ix, iy = pdf.get_x(), pdf.get_y()
-                        rind += 1
-                    if indx == (len(dfl[roll][sem + 1]) - 1):
-                        if sem not in dims:
-                            dims[sem] = []
-                        dims[sem] = [pdf.get_x().__round__(2), pdf.get_y().__round__(2)]
-                        abscissa = pdf.get_x()
-                        tx = pdf.get_x()
-                        if (sem + 1) % 3 == 0:
-                            recy = pdf.get_y() + 28
-                            abscissa = 7
-                            recx = abscissa
-                        cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
-                        pdf.set_font(style="B", size=10)
-                        pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
-                        pdf.rect(x=cx - 14, y=cy - 2, w=95, h=7, style="")
-                        pdf.set_font(style="", size=10)
-                        # print(f"{ordinate.__round__(2)} | sem: {sem}")
-                        ah = recy if recy > 0 else ordinate
-                        pdf.set_y(ah)
-                        ordinate = pdf.get_y()
-                    indx += 1
-                    pdf.ln(line_height)
-            # print(dims)
-            pdf.line(x1=10, y1=dims[len(dims)-1][1] + 30, x2= pdf.w - 10, y2=dims[len(dims) - 1][1] + 28)
+                if sem + 1 in dfl[roll].keys():
+                    for info in dfl[roll][sem + 1]:
+                        if abscissa != 0:
+                            pdf.set_x(abscissa + 10)
+                            rind = 0
+                        wdh = 0
+                        ls = len(info) + 1
+                        for ir in range(ls):
+                            if rind == 0: 
+                                wdh = 14
+                            elif rind == 1:
+                                wdh = 75
+                            elif rind == 2:
+                                wdh = 13
+                            elif rind == 4 or rind == 3:
+                                wdh = 11
 
-            # print(dims["last"])
-            xco = dims[len(dims) - 1][0] + 80
-            yco = dims[len(dims) - 1][1] + 50
+                            if indx == 0:
+                                pdf.set_font(style="B")
+                            else:
+                                pdf.set_font(style="")
+                            if ir < ls - 1:
+                                if sem not in stdims:
+                                    stdims[sem] = []
+                                    stdims[sem] = [pdf.get_x(), pdf.get_y()]
+                                pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
+                                ix, iy = pdf.get_x(), pdf.get_y()
+                            rind += 1
+                        if indx == (len(dfl[roll][sem + 1]) - 1):
+                            if sem not in dims:
+                                dims[sem] = []
+                            dims[sem] = [pdf.get_x().__round__(2), pdf.get_y().__round__(2)]
+                            abscissa = pdf.get_x()
+                            tx = pdf.get_x()
+                            if (sem + 1) % 3 == 0:
+                                recy = pdf.get_y() + 25
+                                abscissa = 7
+                                recx = abscissa
+                            cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
+                            pdf.set_font(style="B", size=10)
+                            pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
+                            pdf.rect(x=cx - 14, y=cy - 2, w=94, h=5.6, style="")
+                            pdf.set_font(style="", size=9)
+                            print(f"{ordinate.__round__(2)} | sem: {sem}")
+                            ah = recy if recy > 0 else ordinate
+                            pdf.set_y(ah)
+                            ordinate = pdf.get_y()
+                        indx += 1
+                        pdf.ln(line_height)
+                else:
+                    missed += 1
+                    continue
+      
+            ldims = len(dims) - missed - 1
+
+            if signAv:
+                pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[ldims][1] + 37, w=30)
+            if sealAv:
+                pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=pdf.w/2, y=dims[ldims][1] + 27, w=30)
+            pdf.line(x1=10, y1=dims[ldims][1] + 30, x2= pdf.w - 10, y2=dims[ldims][1] + 28)
+            
+
+            xco = dims[ldims][0] + 80
+            yco = dims[ldims][1] + 50
             pdf.line(xco, yco, xco + 50, yco)
             pdf.set_font(size=12, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
@@ -199,16 +220,16 @@ def prepPdfForRolls(rng: []):
             pdf.output(f"results/{roll}.pdf")
         else:
             continue
+    return
 
 
 def prepMs(rnz, all=False):
     temp = rnz.replace(" ", "").split("-")
-    print(f"fffff{temp}")
 
     validRange = []
     absValidRange = []
     lulz = False
-    # print(temp)
+
     if not all:
         for f in range(7):
             if temp[1][f] != temp[1][f]:
@@ -225,7 +246,6 @@ def prepMs(rnz, all=False):
                 tempo = f"0{num}"
             validRange.append(f"{temp[0][:6]}{tempo}")
     
-    print(validRange)
     if os.path.exists(os.path.join(os.getcwd(), "results")):
         shutil.rmtree(os.path.join(os.getcwd(), "results"))
     os.mkdir(os.path.join(os.getcwd(), "results"))
@@ -234,7 +254,7 @@ def prepMs(rnz, all=False):
     somethingAns = pd.read_csv(file_to_be_parsed)
     dFrame = pd.read_csv(file_to_be_parsed, usecols=[0, 1, 2, 3, 4, 5], index_col=0)
     dFrame.sort_values(by=["Roll", "Sem", "SubCode"], inplace=True)
-    # print(dFrame)
+
     cntr = 1
 
     for index, contents in enumerate(csv.reader(open(subNameMapping))):
@@ -258,19 +278,12 @@ def prepMs(rnz, all=False):
         for sth in validRange:
             if sth in dfl:
                 absValidRange.append(sth)
-    # print("**************88")
-    # print(validRange)
-    # print("___________________88")
-    # print(absValidRange)
-    # print("|||||||||||||||||||||")
-    # return absValidRange
 
-    """All the fpdf stuff goes here:"""
-    # prepOverallResult("0401CS01")
     prepPdfForRolls(absValidRange)
+    dfl.clear()
+    return
 
 def main():
-    # print("hii")
     pass
 
 if __name__ == "__main__":

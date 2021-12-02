@@ -48,18 +48,24 @@ def file():
           return redirect(request.url)
 
       files = request.files.getlist('files[]')
-      if 'sign' in request.files and 'application/octet-stream' not in request.files:
-         print(request.files['sign'])
-         cPath =(os.path.join(app.config['UPLOAD_FOLDER'], "sign.png"))
-         request.files['sign'].save(cPath)
-         print(f"saved to:{cPath}")
-      if 'seal' in request.files and 'application/octet-stream' not in request.files:
-         print(request.files['seal'])
-         cPath =(os.path.join(app.config['UPLOAD_FOLDER'], "seal.png"))
-         request.files['seal'].save(cPath)
-         print(f"saved to:{cPath}")
+      rfSign = request.files['sign']
+      rfSeal = str(request.files['seal'])
+      print("+++++++")
+      print(files)
+      print(str(rfSign))
+      print(str(rfSeal))
+      print("++++++++")
+      if 'sign' in request.files and 'application/octet-stream' not in str(rfSign):
+         print(f"{request.files['sign']} || {type(request.files['sign'])}")
+         request.files['sign'].save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(request.files['sign'].filename)))
+         print(f"Saving attempt: {os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(request.files['sign'].filename))}")
+      if 'seal' in request.files and 'application/octet-stream' not in str(rfSeal):
+         print(f"{request.files['seal']} || {type(request.files['seal'])}")
+         request.files['seal'].save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(request.files['seal'].filename)))
+         print(f"Saving attempt: {os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(request.files['seal'].filename))}")
+         # print(f"saved to:{cPath}")
       for file in files:
-         print(file)
+         print(f"{file} || {type(file)}")
          print("________________--8")
          if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
