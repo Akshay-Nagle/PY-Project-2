@@ -112,8 +112,10 @@ def prepPdfForRolls(rng: []):
     sealAv = checkForImg("seal.jpeg")
     signAv = checkForImg("sign.jpeg")
     for roll in rng:
+        missed = 0
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
+            print(f"Semssssss: {sems}")
             pdf = FPDF(orientation="L", unit="mm", format="A3")
             pdf.add_page()
             pdf.set_font("Times", size=10)
@@ -141,69 +143,81 @@ def prepPdfForRolls(rng: []):
             recx = 0
             tx = 7
             pdf.set_y(ordinate)
+            print("===================================")
+            print(dfl[roll])
+            print("===================================")
 
             for sem in range(sems):
                 indx = 0
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
-                for info in dfl[roll][sem + 1]:
-                    if abscissa != 0:
-                        pdf.set_x(abscissa + 10)
-                        rind = 0
-                    wdh = 0
-                    ls = len(info) + 1
-                    for ir in range(ls):
-                        if rind == 0: 
-                            wdh = 14
-                        elif rind == 1:
-                            wdh = 75
-                        elif rind == 2:
-                            wdh = 13
-                        elif rind == 4 or rind == 3:
-                            wdh = 11
+                print("----------------")
+                print(sem)
+                print("----------------")
+                if sem + 1 in dfl[roll].keys():
+                    for info in dfl[roll][sem + 1]:
+                        if abscissa != 0:
+                            pdf.set_x(abscissa + 10)
+                            rind = 0
+                        wdh = 0
+                        ls = len(info) + 1
+                        for ir in range(ls):
+                            if rind == 0: 
+                                wdh = 14
+                            elif rind == 1:
+                                wdh = 75
+                            elif rind == 2:
+                                wdh = 13
+                            elif rind == 4 or rind == 3:
+                                wdh = 11
 
-                        if indx == 0:
-                            pdf.set_font(style="B")
-                        else:
-                            pdf.set_font(style="")
-                        if ir < ls - 1:
-                            if sem not in stdims:
-                                stdims[sem] = []
-                                stdims[sem] = [pdf.get_x(), pdf.get_y()]
-                            pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
-                            ix, iy = pdf.get_x(), pdf.get_y()
-                        rind += 1
-                    if indx == (len(dfl[roll][sem + 1]) - 1):
-                        if sem not in dims:
-                            dims[sem] = []
-                        dims[sem] = [pdf.get_x().__round__(2), pdf.get_y().__round__(2)]
-                        abscissa = pdf.get_x()
-                        tx = pdf.get_x()
-                        if (sem + 1) % 3 == 0:
-                            recy = pdf.get_y() + 28
-                            abscissa = 7
-                            recx = abscissa
-                        cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
-                        pdf.set_font(style="B", size=10)
-                        pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
-                        pdf.rect(x=cx - 14, y=cy - 2, w=95, h=7, style="")
-                        pdf.set_font(style="", size=10)
-                        # print(f"{ordinate.__round__(2)} | sem: {sem}")
-                        ah = recy if recy > 0 else ordinate
-                        pdf.set_y(ah)
-                        ordinate = pdf.get_y()
-                    indx += 1
-                    pdf.ln(line_height)
+                            if indx == 0:
+                                pdf.set_font(style="B")
+                            else:
+                                pdf.set_font(style="")
+                            if ir < ls - 1:
+                                if sem not in stdims:
+                                    stdims[sem] = []
+                                    stdims[sem] = [pdf.get_x(), pdf.get_y()]
+                                pdf.multi_cell(wdh, line_height, str(info[ir]), border=1, ln=3, max_line_height=pdf.font_size, align="C")
+                                ix, iy = pdf.get_x(), pdf.get_y()
+                            rind += 1
+                        if indx == (len(dfl[roll][sem + 1]) - 1):
+                            if sem not in dims:
+                                dims[sem] = []
+                            dims[sem] = [pdf.get_x().__round__(2), pdf.get_y().__round__(2)]
+                            abscissa = pdf.get_x()
+                            tx = pdf.get_x()
+                            if (sem + 1) % 3 == 0:
+                                recy = pdf.get_y() + 21.5
+                                abscissa = 7
+                                recx = abscissa
+                            cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
+                            pdf.set_font(style="B", size=10)
+                            pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
+                            pdf.rect(x=cx - 14, y=cy - 2, w=95, h=7, style="")
+                            pdf.set_font(style="", size=10)
+                            # print(f"{ordinate.__round__(2)} | sem: {sem}")
+                            ah = recy if recy > 0 else ordinate
+                            pdf.set_y(ah)
+                            ordinate = pdf.get_y()
+                        indx += 1
+                        pdf.ln(line_height)
+                else:
+                    missed += 1
+                    continue
             # print(dims)
+            ldims = len(dims) - missed - 1
+            print(f"lennnn: {ldims} | {len(dims)}")
+            print(f"{dims}")
             if signAv:
-                pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[len(dims) - 1][1] + 37, w=30)
+                pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[ldims][1] + 37, w=30)
             if sealAv:
-                pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=pdf.w/2, y=dims[len(dims) - 1][1] + 27, w=30)
-            pdf.line(x1=10, y1=dims[len(dims)-1][1] + 30, x2= pdf.w - 10, y2=dims[len(dims) - 1][1] + 28)
+                pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=pdf.w/2, y=dims[ldims][1] + 27, w=30)
+            pdf.line(x1=10, y1=dims[ldims][1] + 30, x2= pdf.w - 10, y2=dims[ldims][1] + 28)
 
-            # print(dims["last"])
-            xco = dims[len(dims) - 1][0] + 80
-            yco = dims[len(dims) - 1][1] + 50
+            xco = dims[ldims][0] + 80
+            yco = dims[ldims][1] + 50
             pdf.line(xco, yco, xco + 50, yco)
             pdf.set_font(size=12, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
