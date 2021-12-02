@@ -39,26 +39,28 @@
 		<title>GUI Based Transcript Generator</title>
 	</head>
 	<body>
-	<div class="center" style="text-align:center;">
-        <img src={{url_for('static',filename = '/instiLogo.jpeg')}} alt="Institue Logo"><br><br><br>
+	<div class="center">
+        &emsp;<img style="text-align:center;" src={{url_for('static',filename = '/instiLogo.jpeg')}} alt="Institue Logo"><br><br><br><br><br>
 		<form name ="theform" action = "http://localhost:5000/" method = "POST" enctype = "multipart/form-data">
-		<div class="row">
+		<div class="row" style="text-align:center;">
 			<div class="column" style="text-align:center;">
 			<big><b>Upload Files</b></big>(Grades.CSV, Name-Roll.CSV & Subject_Master.CSV)<p>
 			<input type = "file" name = "files[]" multiple="true"/>
 			</div>
 			<div class="column" style="text-align:center;">
-			<big><b>Upload Signature</b></big> 
+			<big><b>Upload Signature</b></big> <p>
 			<input type = "file" name = "sign"/><br><br>
-			<big><b>Upload Seal</b></big> <br>
+			</div>
+			<div class="column" style="text-align:center;">
+			<big><b>Upload Seal</b></big> <br><p>
 			<input type = "file" name = "seal"/>
 			</div>
 		</div>
 		<br>
-		<big><b>Range</b></big>(Eg: "1901CB01-1901CB80")&emsp;<input type = "text" name = "First" onkeyup="EnableDisable(this)" id="First"/>
-		<!...<input id="btnSubmit" type="button" value="Upload" disabled="disabled" />
-		<p><button type="submit" id="btnSubmit" name = "range" disabled="disabled">Generate In-Range Transcript</button><br>
-		<p><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button>
+		<div style="text-align:center;">
+		<big><b>Range</b></big>(Eg: "0401CS01-0401CS10")&emsp;&emsp;<input type = "text" name = "First" onkeyup="EnableDisable(this)" id="First"/>
+		<p style="text-align:center;"><button type="submit" id="btnSubmit" name = "range" disabled="disabled">Generate In-Range Transcript</button><br>
+		<p style="text-align:center;"><button type="submit" id="transcript" name = "transcript">Generate All Transcript</button>
 		<p>
 		{% with messages = get_flashed_messages() %}
 		{% if messages %}
@@ -70,6 +72,7 @@
 		{% endif %}
 		{% endwith %}
 		</p>
+		</div>
 		</form>
 	</div>  
 	</body>

@@ -11,7 +11,7 @@ from openpyxl.styles import Alignment, Border, Font, NamedStyle, Side
 import os
 
 path = os.getcwd()
-app=Flask(__name__, static_folder=path)
+app=Flask(__name__, static_folder=coreLogic.baseDir)
 app.secret_key = "secret key" # for encrypting the session
 
 #It will allow below 4MB contents only, you can change it
@@ -38,9 +38,9 @@ def upload_form():
 def file():
    if request.method == 'POST':
       rfm = request.form
-      print("============")
-      print(rfm)
-      print("-----------------")
+      #print("============")
+      #print(rfm)
+      #print("-----------------")
       # print(request.files['sign'])
       # print("============")
       if 'files[]' not in request.files:
@@ -52,28 +52,29 @@ def file():
          print(request.files['sign'])
          cPath =(os.path.join(app.config['UPLOAD_FOLDER'], "sign.png"))
          request.files['sign'].save(cPath)
-         print(f"saved to:{cPath}")
+         #print(f"saved to:{cPath}")
       if 'seal' in request.files and 'application/octet-stream' not in request.files:
-         print(request.files['seal'])
+         #print(request.files['seal'])
          cPath =(os.path.join(app.config['UPLOAD_FOLDER'], "seal.png"))
          request.files['seal'].save(cPath)
-         print(f"saved to:{cPath}")
+         #print(f"saved to:{cPath}")
+         
       for file in files:
-         print(file)
-         print("________________--8")
+         #print(file)
+         #print("________________--8")
          if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            print(file)
-            print("***********8")
+            #print(file)
+            #print("***********8")
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-      flash('File(s) successfully uploaded')
+      #flash('File(s) successfully uploaded')
 
 
       if "range" in rfm:
          print("yyyyyyyyyy")
          if "First" in rfm:
             fst = rfm['First']
-            print(fst)
+            #print(fst)
             coreLogic.prepMs(rfm['First'])
             flash('Transcript generated between given range')
          else:

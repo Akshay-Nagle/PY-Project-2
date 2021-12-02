@@ -5,6 +5,7 @@ import pandas as pd
 import csv
 import os
 
+baseDir = os.path.join(os.getcwd(), "static")
 file_to_be_parsed = os.path.join(os.getcwd(), "uploads/grades.csv")
 # header_row = ["Sl No.", "Subject No", "Subject Name", "L-T-P", "Credit", "Subject Type", "Grade"]
 subNameMapping = os.path.join(os.getcwd(), "uploads/subjects_master.csv")
@@ -196,7 +197,7 @@ def prepPdfForRolls(rng: []):
             pdf.set_font(size=12, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
-            pdf.output(f"results/{roll}Result.pdf")
+            pdf.output(f"results/{roll}.pdf")
         else:
             continue
 
