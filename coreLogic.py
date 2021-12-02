@@ -156,9 +156,9 @@ def prepPdfForRolls(rng: []):
                         if rind == 0: 
                             wdh = 14
                         elif rind == 1:
-                            wdh = 77
+                            wdh = 75
                         elif rind == 2:
-                            wdh = 11
+                            wdh = 13
                         elif rind == 4 or rind == 3:
                             wdh = 11
 
