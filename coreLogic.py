@@ -153,7 +153,7 @@ def prepPdfForRolls(rng: []):
                 if sem + 1 in dfl[roll].keys():
                     for info in dfl[roll][sem + 1]:
                         if abscissa != 0:
-                            pdf.set_x(abscissa + 10)
+                            pdf.set_x(abscissa + 8)
                             rind = 0
                         wdh = 0
                         ls = len(info) + 1
@@ -188,7 +188,7 @@ def prepPdfForRolls(rng: []):
                             abscissa = pdf.get_x()
                             tx = pdf.get_x()
                             if (sem + 1) % 3 == 0:
-                                recy = pdf.get_y() + 25
+                                recy = pdf.get_y() + 22.5
                                 abscissa = 7
                                 recx = abscissa
                             cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
@@ -207,16 +207,16 @@ def prepPdfForRolls(rng: []):
                     continue
             ldims = len(dims) - missed - 1
             if signAv:
-                pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[ldims][1] + 37, w=30)
+                pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-65, y=dims[ldims][1] + 37, w=40)
             if sealAv:
-                pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=pdf.w/2, y=dims[ldims][1] + 27, w=30)
+                pdf.image(os.path.join(os.getcwd(), "uploads/seal.jpeg"), x=(pdf.w - 20)/2, y=dims[ldims][1] + 27, w=40)
             pdf.line(x1=10, y1=dims[ldims][1] + 30, x2= pdf.w - 10, y2=dims[ldims][1] + 28)
 
             xco = dims[ldims][0] + 80
             yco = dims[ldims][1] + 50
             pdf.line(xco, yco, xco + 50, yco)
-            pdf.set_font(size=10, style="B")
-            pdf.text(xco - 38, yco, txt="Assitant Registrar")
+            pdf.set_font(size=14, style="B")
+            pdf.text(xco - 42, yco, txt="Assitant Registrar")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
             pdf.output(f"results/{roll}.pdf")
         else:

@@ -81,7 +81,7 @@ def file():
             fst = rfm['First']
             print(fst)
             coreLogic.prepMs(rfm['First'])
-            flash('Transcript generated between given range')
+            flash('Transcripts generated in specified range')
          else:
             flash("Enter valid range for RollNos!")
 
