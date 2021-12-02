@@ -196,7 +196,7 @@ def prepPdfForRolls(rng: []):
             pdf.set_font(size=12, style="B")
             pdf.text(xco - 38, yco, txt="Assitant Registrar")
             pdf.text(20, yco, txt=f"Date Generated: {datetime.today().strftime('%d-%m-%Y | %H:%M:%S')}")
-            pdf.output(f"results/{roll}Result.pdf")
+            pdf.output(f"results/{roll}.pdf")
         else:
             continue
 
