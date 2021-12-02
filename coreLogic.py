@@ -74,8 +74,6 @@ def prepOverallResult(rollNum: str):
                 if line[0] == rollNum:  # Fix a roll no
                     if int(line[1]) == f:  # Iterate on a specific sem
                         ms += int(line[3])
-                        #print(ms)
-                        #print("==========")
                         finalGrade = fixWildcardEntry(line[4].strip())
                         if finalGrade == "F" or finalGrade == "I":
                             pass
@@ -93,7 +91,6 @@ def prepOverallResult(rollNum: str):
         spi.append(mSpi)
         semwiseCreds.append(mSemWiseCreds)
         clearedCreds.append(mSemWiseClsCreds)
-        print(clearedCreds)
 
     mCpi = spi[1] * semwiseCreds[1]
     dynCreds = semwiseCreds[1]
@@ -125,7 +122,6 @@ def prepPdfForRolls(rng: []):
         missed = 0
         if roll in dfl:
             sems, swcreds, clsCreds, spiz, cpiz = prepOverallResult(roll)
-            # print(f"Semssssss: {sems}")
             pdf = FPDF(orientation="L", unit="mm", format="A3")
             pdf.add_page()
             pdf.set_font("Times", size=8.5)
@@ -204,14 +200,11 @@ def prepPdfForRolls(rng: []):
                             pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(clsCreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
                             pdf.rect(x=cx - 14, y=cy - 2, w=94, h=5.6, style="")
                             pdf.set_font(style="", size=9)
-                            # print(f"{ordinate.__round__(2)} | sem: {sem}")
                             ah = recy if recy > 0 else ordinate
                             pdf.set_y(ah)
                             ordinate = pdf.get_y()
                         indx += 1
                         pdf.ln(line_height)
-                    #print("============")
-                    #print(stdims[sem])
                 else:
                     missed += 1
                     continue
@@ -242,6 +235,9 @@ def prepMs(rnz, all=False):
     lulz = False
 
     if not all:
+        if len(temp) == 1:
+            return False
+
         for f in range(7):
             if temp[1][f] != temp[1][f]:
                 lulz = True
@@ -291,12 +287,17 @@ def prepMs(rnz, all=False):
                 absValidRange.append(sth)
 
     prepPdfForRolls(absValidRange)
+    # prepareTranscriptsArchive()
     dfl.clear()
-    #print("hh")
-    return
+    return True
+
+def prepareTranscriptsArchive():
+    if len(os.listdir(os.path.join(os.getcwd(), "results"))) > 0:
+        shutil.make_archive("transcripts", "zip", os.path.join(os.getcwd(), "results"))
+        return True
+    return False
 
 def main():
-    #print("hi")
     #prepMs("1901CS01-1901CS04")
     #print("done")
     pass

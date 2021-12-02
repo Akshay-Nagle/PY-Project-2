@@ -1,6 +1,6 @@
 import coreLogic
 import os      # For File Manipulations like get paths, rename
-from flask import Flask, flash, request, redirect, render_template
+from flask import Flask, flash, request, redirect, render_template, send_file
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
 import shutil
@@ -34,9 +34,17 @@ def allowed_file(filename):
 def upload_form():
    return render_template('upload.html')
 
+@app.route('/download', methods=['GET', 'POST'])
+def push_file():
+    coreLogic.prepareTranscriptsArchive()
+    file_path = os.path.join(os.getcwd(), "transcripts.zip")
+    return send_file(file_path, as_attachment=True)
+
 @app.route('/', methods=['GET','POST'])
 def file():
    if request.method == 'POST':
+      finfo = False
+      rejForm = 'application/octet-stream' 
       rfm = request.form
       print("============")
       print(rfm)
@@ -64,31 +72,48 @@ def file():
          request.files['seal'].save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(request.files['seal'].filename)))
          print(f"Saving attempt: {os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(request.files['seal'].filename))}")
          # print(f"saved to:{cPath}")
-      for file in files:
-         print(f"{file} || {type(file)}")
-         print("________________--8")
-         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            print(file)
-            print("***********8")
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-      flash('File(s) successfully uploaded')
+      if rejForm not in str(files):
+         if len(files) == 3:
+            for file in files :
+               print(f"{file} || {type(file)}")
+               print("________________--8")
+               if file and allowed_file(file.filename):
+                  filename = secure_filename(file.filename)
+                  print(file)
+                  print("***********8")
+                  file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            flash('File(s) successfully uploaded')
+         else: 
+            finfo = True
+            flash("Please input all the required files!")
+            return redirect('/')
+      elif not finfo:
+         flash("Please input all the required files!")
+         return redirect('/')
 
-
-      if "range" in rfm:
+      if "range" in rfm and not finfo:
          print("yyyyyyyyyy")
-         if "First" in rfm:
-            fst = rfm['First']
-            print(fst)
-            coreLogic.prepMs(rfm['First'])
-            flash('Transcripts generated in specified range')
-         else:
-            flash("Enter valid range for RollNos!")
+         if rejForm not in str(files):
+            if "First" in rfm:
+               fst = rfm['First']
+               print(fst)
+               resp = coreLogic.prepMs(rfm['First'])
+               if resp:
+                  flash('Transcripts generated in specified range')
+               else:
+                  flash("Enter valid range for RollNos!")
+            else:
+               flash("Enter valid range for RollNos!")
+         elif not finfo:
+            flash("Please upload all the required files!")
 
       if "transcript" in rfm:
-         coreLogic.prepMs("", all=True)
-         flash('All Transcript generated')
-
+         if rejForm not in str(files):
+            coreLogic.prepMs("", all=True)
+            flash('All Transcript generated')
+         else:
+            if not finfo:
+               flash('Please upload all the required files')
    return redirect('/')
 
 if __name__ == "__main__":
