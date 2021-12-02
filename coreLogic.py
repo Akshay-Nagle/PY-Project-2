@@ -107,11 +107,11 @@ def checkForImg(imgName) -> bool:
     return True
 
 def prepPdfForRolls(rng: []):
-    dims = {}
-    stdims = {}
     sealAv = checkForImg("seal.jpeg")
     signAv = checkForImg("sign.jpeg")
     for roll in rng:
+        dims = {}
+        stdims = {}
         missed = 0
         if roll in dfl:
             sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
