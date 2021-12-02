@@ -66,19 +66,27 @@ def prepOverallResult(rollNum: str):
 
     semwiseCreds = ["Semester wise Credit Taken"]
     fullCreds = ["Total Credits Taken"]
+    clearedCreds = ["Total Credits Cleared"]
     semRow = ["Semester No", 1]
 
     for f in range(1, maxSem):
-        ms, spis = 0, 0
+        ms, cls, spis = 0, 0, 0
         for ind, line in enumerate(masterList):
             if ind > 0:
                 if line[0] == rollNum:  # Fix a roll no
                     if int(line[1]) == f:  # Iterate on a specific sem
                         ms += int(line[3])
+                        #print(ms)
+                        #print("==========")
                         finalGrade = fixWildcardEntry(line[4].strip())
+                        if finalGrade == "F" or finalGrade == "I":
+                            pass
+                        else:
+                            cls += int(line[3])
                         spis += int(line[3]) * gradeMap[finalGrade]
 
         # Handle the case for the sem which does not exist
+        mSemWiseClsCreds = cls
         mSpi = 0
         mSemWiseCreds = 0
         if ms > 0:
@@ -86,6 +94,8 @@ def prepOverallResult(rollNum: str):
             mSemWiseCreds = ms
         spi.append(mSpi)
         semwiseCreds.append(mSemWiseCreds)
+        clearedCreds.append(mSemWiseClsCreds)
+        print(clearedCreds)
 
     mCpi = spi[1] * semwiseCreds[1]
     dynCreds = semwiseCreds[1]
@@ -99,7 +109,7 @@ def prepOverallResult(rollNum: str):
         mCpi += spi[sem] * semwiseCreds[sem]
         cpi.append((mCpi / dynCreds).__round__(2))
 
-    return maxSem - 1, semwiseCreds, fullCreds, spi, cpi
+    return maxSem - 1, semwiseCreds, clearedCreds, spi, cpi
 
 def checkForImg(imgName) -> bool:
     conts = os.listdir(os.path.join(os.getcwd(), "uploads"))
@@ -116,7 +126,7 @@ def prepPdfForRolls(rng: []):
         txtForSem = {}
         missed = 0
         if roll in dfl:
-            sems, swcreds, fullcreds, spiz, cpiz = prepOverallResult(roll)
+            sems, swcreds, clsCreds, spiz, cpiz = prepOverallResult(roll)
             # print(f"Semssssss: {sems}")
             pdf = FPDF(orientation="L", unit="mm", format="A3")
             pdf.add_page()
@@ -193,7 +203,7 @@ def prepPdfForRolls(rng: []):
                                 recx = abscissa
                             cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
                             pdf.set_font(style="B", size=10)
-                            pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
+                            pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(clsCreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
                             pdf.rect(x=cx - 14, y=cy - 2, w=94, h=5.6, style="")
                             pdf.set_font(style="", size=9)
                             # print(f"{ordinate.__round__(2)} | sem: {sem}")
@@ -202,8 +212,8 @@ def prepPdfForRolls(rng: []):
                             ordinate = pdf.get_y()
                         indx += 1
                         pdf.ln(line_height)
-                    print("============")
-                    print(stdims[sem])
+                    #print("============")
+                    #print(stdims[sem])
                 else:
                     missed += 1
                     continue
@@ -284,13 +294,14 @@ def prepMs(rnz, all=False):
 
     prepPdfForRolls(absValidRange)
     dfl.clear()
-    print("hh")
+    #print("hh")
     return
 
 def main():
-    print("hi")
-    prepMs("1901CS01-1901CS04")
-    print("done")
+    #print("hi")
+    #prepMs("1901CS01-1901CS04")
+    #print("done")
+    pass
 
 if __name__ == "__main__":
     main()
