@@ -143,17 +143,11 @@ def prepPdfForRolls(rng: []):
             recx = 0
             tx = 7
             pdf.set_y(ordinate)
-            # print("===================================")
-            # print(dfl[roll])
-            # print("===================================")
 
             for sem in range(sems):
                 indx = 0
                 if (sem) % 4 == 0 and sem > 0:
                     pdf.set_x(recx)
-                # print("----------------")
-                # print(sem)
-                # print("----------------")
                 if sem + 1 in dfl[roll].keys():
                     for info in dfl[roll][sem + 1]:
                         if abscissa != 0:
@@ -195,7 +189,7 @@ def prepPdfForRolls(rng: []):
                             cx, cy = pdf.get_x() - 110, pdf.get_y() + 8
                             pdf.set_font(style="B", size=8.5)
                             pdf.text(x=cx - 12, y= cy + 2, txt=f"Total Credits: {str(swcreds[sem + 1])}  Credits cleared: {str(swcreds[sem + 1])}    SPI: {str(spiz[sem + 1])}   CPI: {str(cpiz[sem + 1])}")
-                            pdf.rect(x=cx - 14, y=cy - 2, w=95, h=7, style="")
+                            pdf.rect(x=cx - 14, y=cy - 2, w=80, h=5.5, style="")
                             pdf.set_font(style="", size=8.5)
                             # print(f"{ordinate.__round__(2)} | sem: {sem}")
                             ah = recy if recy > 0 else ordinate
@@ -206,10 +200,7 @@ def prepPdfForRolls(rng: []):
                 else:
                     missed += 1
                     continue
-            # print(dims)
             ldims = len(dims) - missed - 1
-            # print(f"lennnn: {ldims} | {len(dims)}")
-            # print(f"{dims}")
             if signAv:
                 pdf.image(os.path.join(os.getcwd(), "uploads/sign.jpeg"), x=pdf.w-55, y=dims[ldims][1] + 37, w=30)
             if sealAv:
@@ -225,6 +216,7 @@ def prepPdfForRolls(rng: []):
             pdf.output(f"results/{roll}.pdf")
         else:
             continue
+    return
 
 
 def prepMs(rnz, all=False):
@@ -284,16 +276,11 @@ def prepMs(rnz, all=False):
         for sth in validRange:
             if sth in dfl:
                 absValidRange.append(sth)
-    # print("**************88")
-    # print(validRange)
-    # print("___________________88")
-    # print(absValidRange)
-    # print("|||||||||||||||||||||")
-    # return absValidRange
 
     """All the fpdf stuff goes here:"""
-    # prepOverallResult("0401CS01")
     prepPdfForRolls(absValidRange)
+    dfl.clear()
+    return
 
 def main():
     # print("hii")
