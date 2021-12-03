@@ -18,11 +18,16 @@ app.config['MAX_CONTENT_LENGTH'] = 4 * 1024 * 1024
 
 # file Upload
 UPLOAD_FOLDER = os.path.join(path, 'uploads')
+transcripts_DIR = os.path.join(path, 'transcriptsIITP')
 
 # Make directory if "uploads" folder not exists
 if os.path.exists(UPLOAD_FOLDER):
     shutil.rmtree(UPLOAD_FOLDER)
 os.mkdir(UPLOAD_FOLDER)
+
+if os.path.exists(transcripts_DIR):
+    shutil.rmtree(transcripts_DIR)
+os.mkdir(transcripts_DIR)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = set(['csv', 'png', 'jpeg', 'jpg'])
